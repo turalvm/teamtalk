@@ -71,7 +71,11 @@ jobs:
       shell: pwsh
       run: |
         New-Item -ItemType Directory -Path "TeamTalk5-Windows-x64" -Force
-        Copy-Item -Path "windows/Client/qtTeamTalk/TeamTalk5.exe" -Destination "TeamTalk5-Windows-x64/"
+        Copy-Item -Path "windows/Client/qtTeamTalk/TeamTalk5.exe" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
+        if (-not (Test-Path "TeamTalk5-Windows-x64/TeamTalk5.exe")) {
+          Get-ChildItem -Path output -Filter "TeamTalk5.exe" -Recurse | Copy-Item -Destination "TeamTalk5-Windows-x64/"
+        }
+        Copy-Item -Path "windows/install.bat" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
         Copy-Item -Path "windows/Client/qtTeamTalk/install.bat" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
         Copy-Item -Path "windows/Library/TeamTalk_DLL/*.dll" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
         if (Test-Path "windows/Client/qtTeamTalk/windeployqt") {

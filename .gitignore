@@ -1,6 +1,8 @@
 .gradle/
-build/
+/build/
+android/build/
 output/
+!windows/Library/TeamTalkLib/build/
 *.obj
 *.exe
 *.dll
