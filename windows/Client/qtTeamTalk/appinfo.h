@@ -27,7 +27,7 @@
 
 #define COMPANYNAME         "BearWare.dk"
 #define APPVERSION_SHORT    "5.23.1"
-#define APPVERSION_POSTFIX  " - Unreleased"
+#define APPVERSION_POSTFIX  ""
 #define APPVERSION          TEAMTALK_VERSION APPVERSION_POSTFIX
 
 #define APPICON             QString::fromUtf8(":/images/images/teamtalk.png")

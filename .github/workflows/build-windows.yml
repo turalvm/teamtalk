@@ -2,9 +2,9 @@ name: Build Windows 64-bit Client
 
 on:
   push:
-    branches: [ "master", "windows" ]
+    branches: [ "master", "windows", "main" ]
   pull_request:
-    branches: [ "master", "windows" ]
+    branches: [ "master", "windows", "main" ]
   workflow_dispatch:
 
 jobs:
