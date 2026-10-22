@@ -121,7 +121,7 @@ dependencies {
     implementation libs.androidx.preference
     implementation libs.androidx.viewpager
     implementation libs.material
-    implementation 'com.github.mwiede:jsch:0.2.21'
+    implementation 'com.github.mwiede:jsch:2.28.8'
     implementation files('../../Library/TeamTalkJNI/libs/TeamTalk5.jar')
 
     testImplementation libs.junit.jupiter.api
