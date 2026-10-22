@@ -1,0 +1,29 @@
+name: Build Translations Only
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'windows/Client/qtTeamTalk/languages/**'
+
+jobs:
+  build-translations:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Compile Translations
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get purge -y needrestart || true
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends qttools5-dev-tools
+        lrelease windows/Client/qtTeamTalk/languages/*.ts
+
+    - name: Upload QM Files
+      uses: actions/upload-artifact@v4
+      with:
+        name: TeamTalk5-Translations
+        path: windows/Client/qtTeamTalk/languages/*.qm

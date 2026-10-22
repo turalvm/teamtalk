@@ -1,0 +1,134 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'dk.bearware.gui'
+    compileSdk {
+        version = release(37)
+    }
+    buildToolsVersion = '37.0.0'
+    ndkVersion = '29.0.14206865'
+
+    defaultConfig {
+        applicationId = 'com.turalvm.teamtalkplus'
+        minSdk = 23
+        targetSdk = 37
+        versionCode = 154
+        versionName = '5.23'
+
+        testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    File ksFile = file('keystore.properties')
+    if (ksFile.exists()) {
+        Properties props = new Properties()
+        props.load(new FileInputStream(ksFile))
+
+        signingConfigs {
+            release {
+                storeFile = file(props['RELEASE_STORE_FILE'])
+                storePassword = props['RELEASE_STORE_PASSWORD']
+                keyAlias = props['RELEASE_KEY_ALIAS']
+                keyPassword = props['RELEASE_KEY_PASSWORD']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (ksFile.exists()) {
+                signingConfig = signingConfigs.release
+            }
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    splits {
+        abi {
+            enable = true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            universalApk = true
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['build/jniLibs-staging']
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+        pickFirsts = [
+                // Ignore duplicate files in junit-platform-commons-1.9.3.jar and junit-jupiter-api-5.9.3.jar
+                'META-INF/LICENSE.md',
+                'META-INF/LICENSE-notice.md'
+        ]
+    }
+
+    lint {
+        disable 'MissingTranslation'
+    }
+}
+
+tasks.register('syncJniLibs', Sync) {
+    def jniSrc = file('src/main/jniLibs').exists() ? file('src/main/jniLibs') : (file('libs').exists() ? file('libs') : file('../Library/TeamTalkJNI/libs'))
+    from(jniSrc) {
+        include 'arm64-v8a/**', 'armeabi-v7a/**', 'x86/**', 'x86_64/**'
+    }
+    into layout.buildDirectory.dir('jniLibs-staging')
+}
+
+afterEvaluate {
+    tasks.named('preBuild').configure { dependsOn 'syncJniLibs' }
+}
+
+dependencies {
+    coreLibraryDesugaring libs.desugar.jdk.libs
+    implementation libs.gson
+    implementation libs.androidx.annotation
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core
+    implementation libs.androidx.fragment
+    implementation libs.androidx.media
+    implementation libs.androidx.preference
+    implementation libs.androidx.viewpager
+    implementation libs.material
+    implementation 'com.github.mwiede:jsch:0.2.21'
+    if (file('libs/TeamTalk5.jar').exists()) {
+        implementation files('libs/TeamTalk5.jar')
+    } else {
+        implementation files('../Library/TeamTalkJNI/libs/TeamTalk5.jar')
+    }
+
+    testImplementation libs.junit.jupiter.api
+    if (file('libs/TeamTalk5Test.jar').exists()) {
+        testImplementation files('libs/TeamTalk5Test.jar')
+    } else if (file('../Library/TeamTalkJNI/libs/TeamTalk5Test.jar').exists()) {
+        testImplementation files('../Library/TeamTalkJNI/libs/TeamTalk5Test.jar')
+    }
+
+    androidTestImplementation libs.androidx.test.core
+    androidTestImplementation libs.androidx.test.runner
+    androidTestImplementation libs.androidx.test.rules
+    androidTestImplementation libs.junit.jupiter.api
+    if (file('libs/TeamTalk5Test.jar').exists()) {
+        androidTestImplementation files('libs/TeamTalk5Test.jar')
+    } else if (file('../Library/TeamTalkJNI/libs/TeamTalk5Test.jar').exists()) {
+        androidTestImplementation files('../Library/TeamTalkJNI/libs/TeamTalk5Test.jar')
+    }
+}

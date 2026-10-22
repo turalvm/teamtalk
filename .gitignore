@@ -1,0 +1,14 @@
+.gradle/
+build/
+output/
+*.obj
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
+*.exp
+local.properties
+.idea/
+.vs/
+*.user

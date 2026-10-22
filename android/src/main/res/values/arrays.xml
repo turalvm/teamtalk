@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="gender_entries">
+        <item>@string/user_state_male</item>
+        <item>@string/user_state_female</item>
+        <item>@string/user_state_neutral</item>
+    </string-array>
+
+    <!-- Must match Utils.GENDER_* -->
+    <string-array name="gender_values" translatable="false">
+        <item>male</item>
+        <item>female</item>
+        <item>neutral</item>
+    </string-array>
+
+    <string-array name="pref_custom_aec_output_entries">
+        <item>@string/pref_custom_aec_output_speaker</item>
+        <item>@string/pref_custom_aec_output_earpiece</item>
+        <item>@string/pref_custom_aec_output_auto</item>
+        <item>@string/pref_custom_aec_output_disabled</item>
+    </string-array>
+
+    <!-- Must match Preferences.CUSTOM_AEC_OUTPUT_* -->
+    <string-array name="pref_custom_aec_output_values" translatable="false">
+        <item>speaker</item>
+        <item>earpiece</item>
+        <item>auto</item>
+        <item>disabled</item>
+    </string-array>
+
+
+    <string-array name="pref_quick_move_scope_entries">
+        <item>@string/pref_quick_move_scope_current_channel</item>
+        <item>@string/pref_quick_move_scope_all_users</item>
+    </string-array>
+
+    <!-- Must match Preferences.QUICK_MOVE_SCOPE_* -->
+    <string-array name="pref_quick_move_scope_values" translatable="false">
+        <item>current_channel</item>
+        <item>all_users</item>
+    </string-array>
+</resources>

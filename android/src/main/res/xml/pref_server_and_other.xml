@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="pref_key_broadcast"
+        android:title="@string/action_broadcast"
+        android:summary="@string/text_broadcast_message" />
+
+    <Preference
+        android:key="pref_key_user_accounts"
+        android:title="@string/action_user_accounts"
+        android:summary="@string/pref_summary_user_accounts" />
+
+    <Preference
+        android:key="pref_key_restart_server"
+        android:title="@string/action_restart_server"
+        android:summary="@string/pref_summary_restart_server" />
+
+    <ListPreference
+        android:key="quick_move_users_scope"
+        android:defaultValue="current_channel"
+        android:title="@string/pref_title_quick_move_scope"
+        android:summary="%s"
+        android:entries="@array/pref_quick_move_scope_entries"
+        android:entryValues="@array/pref_quick_move_scope_values" />
+
+    <ListPreference
+        android:key="custom_aec_output_mode"
+        android:defaultValue="speaker"
+        android:title="@string/pref_title_custom_aec_output"
+        android:summary="%s"
+        android:entries="@array/pref_custom_aec_output_entries"
+        android:entryValues="@array/pref_custom_aec_output_values" />
+
+    <CheckBoxPreference
+        android:key="custom_aec_talk_only_checkbox"
+        android:defaultValue="false"
+        android:title="@string/pref_title_custom_aec_talk_only"
+        android:summary="@string/pref_summary_custom_aec_talk_only" />
+
+    <CheckBoxPreference
+        android:key="headphones_call_mode_checkbox"
+        android:defaultValue="false"
+        android:title="@string/pref_title_headphones_call_mode"
+        android:summary="@string/pref_summary_headphones_call_mode" />
+
+
+</PreferenceScreen>
