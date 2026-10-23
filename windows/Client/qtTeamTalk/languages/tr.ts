@@ -5148,6 +5148,11 @@ Aşağıdaki sayfadan indirebilirsiniz:<byte value="xd"/>
 <context>
     <name>MoveUsersDlg</name>
     <message>
+        <source>Select All</source>
+        <translation>Tümünü seç</translation>
+    </message>
+    
+    <message>
         <location filename="../moveusersdlg.cpp" line="34"/>
         <location filename="../moveusersdlg.cpp" line="56"/>
         <source>Move Users</source>

@@ -5107,6 +5107,11 @@ Should these settings be applied?</source>
 <context>
     <name>MoveUsersDlg</name>
     <message>
+        <source>Select All</source>
+        <translation>Select All</translation>
+    </message>
+    
+    <message>
         <location filename="../moveusersdlg.cpp" line="34"/>
         <location filename="../moveusersdlg.cpp" line="56"/>
         <source>Move Users</source>

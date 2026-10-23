@@ -45,9 +45,12 @@ protected:
 
 private slots:
     void slotMoveClicked();
+    void slotItemChanged(QListWidgetItem* item);
 
 private:
     QListWidget* usersListWidget;
+    QListWidgetItem* selectAllItem;
+    bool m_updatingCheckStates;
     QComboBox* channelComboBox;
     QPushButton* moveBtn;
     QPushButton* cancelBtn;

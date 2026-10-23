@@ -29,7 +29,8 @@ MoveUsersDlg::MoveUsersDlg(const QVector<int>& userIds,
                            const QVector<int>& preselectedUserIds,
                            int preselectedChannelId,
                            QWidget *parent)
-    : QDialog(parent), userIds(userIds), channelIds(channelIds)
+    : QDialog(parent), selectAllItem(nullptr), m_updatingCheckStates(false),
+      userIds(userIds), channelIds(channelIds)
 {
     setupUi();
     populateUsers(preselectedUserIds);
@@ -73,6 +74,7 @@ void MoveUsersDlg::setupUi()
 
     connect(moveBtn, &QPushButton::clicked, this, &MoveUsersDlg::slotMoveClicked);
     connect(cancelBtn, &QPushButton::clicked, this, &MoveUsersDlg::reject);
+    connect(usersListWidget, &QListWidget::itemChanged, this, &MoveUsersDlg::slotItemChanged);
 
     setTabOrder(usersListWidget, channelComboBox);
     setTabOrder(channelComboBox, moveBtn);
@@ -81,6 +83,7 @@ void MoveUsersDlg::setupUi()
 
 void MoveUsersDlg::populateUsers(const QVector<int>& preselectedUserIds)
 {
+    m_updatingCheckStates = true;
     usersListWidget->clear();
 
     struct UserEntry {
@@ -100,7 +103,12 @@ void MoveUsersDlg::populateUsers(const QVector<int>& preselectedUserIds)
         return a.name.localeAwareCompare(b.name) < 0;
     });
 
-    QListWidgetItem* firstCheckedItem = nullptr;
+    // Top item: Select All
+    selectAllItem = new QListWidgetItem(tr("Select All"), usersListWidget);
+    selectAllItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+    selectAllItem->setData(Qt::UserRole, 0);
+
+    bool allChecked = (!entries.isEmpty());
 
     for (const auto& entry : entries)
     {
@@ -110,16 +118,50 @@ void MoveUsersDlg::populateUsers(const QVector<int>& preselectedUserIds)
         item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
         item->setData(Qt::UserRole, entry.id);
 
-        if (checked && !firstCheckedItem)
-            firstCheckedItem = item;
+        if (!checked)
+            allChecked = false;
     }
 
-    if (firstCheckedItem)
-        usersListWidget->setCurrentItem(firstCheckedItem);
-    else if (usersListWidget->count() > 0)
-        usersListWidget->setCurrentRow(0);
+    selectAllItem->setCheckState(allChecked ? Qt::Checked : Qt::Unchecked);
+    m_updatingCheckStates = false;
 
+    usersListWidget->setCurrentRow(0);
     usersListWidget->setFocus();
+}
+
+void MoveUsersDlg::slotItemChanged(QListWidgetItem* item)
+{
+    if (m_updatingCheckStates || !item)
+        return;
+
+    m_updatingCheckStates = true;
+
+    if (item == selectAllItem)
+    {
+        bool checked = (item->checkState() == Qt::Checked);
+        for (int i = 1; i < usersListWidget->count(); ++i)
+        {
+            usersListWidget->item(i)->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
+        }
+    }
+    else
+    {
+        bool allChecked = (usersListWidget->count() > 1);
+        for (int i = 1; i < usersListWidget->count(); ++i)
+        {
+            if (usersListWidget->item(i)->checkState() != Qt::Checked)
+            {
+                allChecked = false;
+                break;
+            }
+        }
+        if (selectAllItem)
+        {
+            selectAllItem->setCheckState(allChecked ? Qt::Checked : Qt::Unchecked);
+        }
+    }
+
+    m_updatingCheckStates = false;
 }
 
 void MoveUsersDlg::populateChannels(int preselectedChannelId)
@@ -224,8 +266,12 @@ QVector<int> MoveUsersDlg::getSelectedUserIds() const
     for (int i = 0; i < usersListWidget->count(); ++i)
     {
         QListWidgetItem* item = usersListWidget->item(i);
-        if (item && item->checkState() == Qt::Checked)
-            selectedUserIds.append(item->data(Qt::UserRole).toInt());
+        if (item && item != selectAllItem && item->checkState() == Qt::Checked)
+        {
+            int uid = item->data(Qt::UserRole).toInt();
+            if (uid > 0)
+                selectedUserIds.append(uid);
+        }
     }
     return selectedUserIds;
 }
