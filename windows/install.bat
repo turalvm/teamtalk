@@ -2,21 +2,26 @@
 setlocal
 cd /d "%~dp0"
 
-echo TeamTalk bağlanır (əgər açıqdırsa)...
+echo TeamTalk baglanir (aciqdirsa)...
 taskkill /f /im TeamTalk5.exe >nul 2>&1
 
-echo Fayllar "C:\Program Files\TeamTalk5" qovluğuna kopyalanır...
+echo Fayllar "C:\Program Files\TeamTalk5" qovluguna kopyalanir...
 if not exist "C:\Program Files\TeamTalk5" mkdir "C:\Program Files\TeamTalk5"
 
-xcopy /E /Y /I /C /Q "%~dp0*.*" "C:\Program Files\TeamTalk5\" >nul
+robocopy "%~dp0." "C:\Program Files\TeamTalk5" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if %errorlevel% leq 7 (
+    rem robocopy success
+) else (
+    xcopy /E /Y /C /Q /H /R "%~dp0*.*" "C:\Program Files\TeamTalk5\" >nul 2>&1
+)
 
-echo Masaüstünə qısayol əlavə edilir...
-powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $d = [Environment]::GetFolderPath('Desktop'); $s = $ws.CreateShortcut(\"$d\TeamTalk 5.lnk\"); $s.TargetPath = 'C:\Program Files\TeamTalk5\TeamTalk5.exe'; $s.WorkingDirectory = 'C:\Program Files\TeamTalk5'; $s.IconLocation = 'C:\Program Files\TeamTalk5\TeamTalk5.exe,0'; $s.Save()"
+echo Masaustune qisayol yaradilir...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $d = [Environment]::GetFolderPath('Desktop'); $s = $ws.CreateShortcut(\"$d\TeamTalk 5.lnk\"); $s.TargetPath = 'C:\Program Files\TeamTalk5\TeamTalk5.exe'; $s.WorkingDirectory = 'C:\Program Files\TeamTalk5'; $s.IconLocation = 'C:\Program Files\TeamTalk5\TeamTalk5.exe,0'; $s.Save()"
 
 echo.
 echo ========================================================
-echo   TeamTalk 5 uğurla Program Files qovluğuna kopyalandı
-echo   və Masaüstünə qısayol yaradıldı!
+echo   TeamTalk 5 ugurla Program Files qovluguna kopyalandi
+echo   ve Masaustune qisayol yaradildi!
 echo ========================================================
 echo.
 pause
