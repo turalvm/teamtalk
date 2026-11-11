@@ -665,6 +665,13 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QCheckBox" name="moveusersCurrentChanOnlyChkBox">
+              <property name="text">
+               <string>Show only users in current channel in Move Users dialog</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>

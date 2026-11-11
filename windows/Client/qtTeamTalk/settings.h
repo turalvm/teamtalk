@@ -187,6 +187,8 @@
 #define SETTINGS_DISPLAY_CHANNEL_TOPIC_DEFAULT             false
 #define SETTINGS_DISPLAY_START_SERVERLIST             "display/serverlist-on-start"
 #define SETTINGS_DISPLAY_START_SERVERLIST_DEFAULT             false
+#define SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY       "display/moveusers-currentchannelonly"
+#define SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY_DEFAULT false
 #define SETTINGS_DISPLAY_CHANNELSORT                 "display/sort-channels"
 #define SETTINGS_DISPLAY_CHANNELSORT_DEFAULT         CHANNELSORT_ASCENDING
 #define SETTINGS_DISPLAY_WINDOW_MAXIMIZE                          "display/window-maximized"

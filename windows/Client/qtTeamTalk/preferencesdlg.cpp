@@ -507,6 +507,8 @@ void PreferencesDlg::initDisplayTab()
                                                 SETTINGS_DISPLAY_ANIM_DEFAULT).toBool());
     ui.ServnameChkBox->setChecked(ttSettings->value(SETTINGS_DISPLAY_SERVNAME,
                                                     SETTINGS_DISPLAY_SERVNAME_DEFAULT).toBool());
+    ui.moveusersCurrentChanOnlyChkBox->setChecked(ttSettings->value(SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY,
+                                                                    SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY_DEFAULT).toBool());
 
     ui.languageBox->clear();
     ui.languageBox->addItem(SETTINGS_DISPLAY_LANGUAGE_DEFAULT);
@@ -812,6 +814,7 @@ void PreferencesDlg::slotSaveChanges()
         ttSettings->setValueOrClear(SETTINGS_DISPLAY_MOTD_DLG, ui.dlgMOTDChkBox->isChecked(), SETTINGS_DISPLAY_MOTD_DLG_DEFAULT);
         ttSettings->setValueOrClear(SETTINGS_DISPLAY_CHANNEL_TOPIC, ui.chanTopicChkBox->isChecked(), SETTINGS_DISPLAY_CHANNEL_TOPIC_DEFAULT);
         ttSettings->setValueOrClear(SETTINGS_DISPLAY_START_SERVERLIST, ui.startServerListChkBox->isChecked(), SETTINGS_DISPLAY_START_SERVERLIST_DEFAULT);
+        ttSettings->setValueOrClear(SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY, ui.moveusersCurrentChanOnlyChkBox->isChecked(), SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY_DEFAULT);
         bool modlistview = ttSettings->value(SETTINGS_DISPLAY_CHAT_HISTORY_LISTVIEW, SETTINGS_DISPLAY_CHAT_HISTORY_LISTVIEW_DEFAULT).toBool() != ui.chatlistviewChkBox->isChecked();
         ttSettings->setValueOrClear(SETTINGS_DISPLAY_CHAT_HISTORY_LISTVIEW, ui.chatlistviewChkBox->isChecked(), SETTINGS_DISPLAY_CHAT_HISTORY_LISTVIEW_DEFAULT);
         if (modlistview)

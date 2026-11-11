@@ -2459,9 +2459,10 @@ void MainWindow::showTTErrorMessage(const ClientErrorMsg& msg, CommandComplete c
         textmsg = tr("Channel already exists");break;
     case CMDERR_USER_NOT_FOUND :
         //unsubscribe is also used to close streams, so just ignore if
-        //user doesn't exist.
+        //user doesn't exist. Also ignore for move command if user went offline.
         if(cmd_type != CMD_COMPLETE_SUBSCRIBE &&
-           cmd_type != CMD_COMPLETE_UNSUBSCRIBE)
+           cmd_type != CMD_COMPLETE_UNSUBSCRIBE &&
+           cmd_type != CMD_COMPLETE_MOVEUSER)
             textmsg = tr("User not found");
         break;
     case CMDERR_OPENFILE_FAILED :
@@ -5260,16 +5261,19 @@ void MainWindow::slotUsersAdvancedMoveUsers()
 
 void MainWindow::slotUsersAdvancedMoveUsersDialog()
 {
-    QVector<int> preselected = m_moveusers;
-    if (preselected.isEmpty())
-    {
-        int selUser = ui.channelsWidget->selectedUser();
-        if (selUser > 0)
-            preselected.append(selUser);
-    }
+    QVector<int> preselected;
     int targetChanId = ui.channelsWidget->selectedChannel(true);
 
-    MoveUsersDlg dlg(ui.channelsWidget->getUsers(), ui.channelsWidget->getChannels(),
+    bool currentChanOnly = ttSettings->value(SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY,
+                                             SETTINGS_DISPLAY_MOVEUSERS_CURRENT_CHANNEL_ONLY_DEFAULT).toBool();
+    int myChanId = TT_GetMyChannelID(ttInst);
+    QVector<int> userList;
+    if (currentChanOnly && myChanId > 0)
+        userList = ui.channelsWidget->getUsersInChannel(myChanId);
+    else
+        userList = ui.channelsWidget->getUsers();
+
+    MoveUsersDlg dlg(userList, ui.channelsWidget->getChannels(),
                      preselected, targetChanId, this);
     if (dlg.exec() == QDialog::Accepted)
     {
@@ -5281,7 +5285,15 @@ void MainWindow::slotUsersAdvancedMoveUsersDialog()
 void MainWindow::moveUsersToChannel(int chanid)
 {
     for (auto userid : m_moveusers)
-        TT_DoMoveUser(ttInst, userid, chanid);
+    {
+        User u;
+        if (TT_GetUser(ttInst, userid, &u) && u.nChannelID > 0)
+        {
+            int cmdid = TT_DoMoveUser(ttInst, userid, chanid);
+            if (cmdid > 0)
+                m_commands.insert(cmdid, CMD_COMPLETE_MOVEUSER);
+        }
+    }
 
     Channel chan;
     ui.channelsWidget->getChannel(chanid, chan);
