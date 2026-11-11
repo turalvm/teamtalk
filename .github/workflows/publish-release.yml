@@ -1,0 +1,51 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-release.yml'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: TeamTalk5-Windows-x64
+          run-id: 43092630781
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: TeamTalk5-Windows-x64
+
+      - name: Create Zip Package
+        run: |
+          cd TeamTalk5-Windows-x64
+          zip -r ../TeamTalk5-Windows-x64.zip .
+          cd ..
+          ls -lh TeamTalk5-Windows-x64.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v5.23.1-win64
+          name: TeamTalk v5.23.1 Windows x64
+          body: |
+            ## TeamTalk 5.23.1 Windows x64 (Tam Paket / Standalone)
+
+            ### Yeniliklər və Təkmilləşdirmələr:
+            * **İstifadəçiləri köçürmə dialoqu (`Ctrl+Alt+M`):**
+              * Siyahı açılarkən kursorun üzərində olduğu şəxsin avtomatik işarəli gəlməsi problemi aradan qaldırıldı (siyahı tam təmiz açılır).
+              * Ən üstdə **"Hamısını seç" (Select All)** funksiyası mövcuddur.
+              * Siyahıdan istifadəçilər seçildikdən sonra kimsə oflayn olarsa və ya kanaldan çıxarsa, köçürmə zamanı xəta bildirişi çıxmır; digər istifadəçilər normal köçürülür.
+            * **Tənzimləmələr (F4 -> Görünüş / Display):**
+              * Yeni seçim əlavə edildi: *"İstifadəçiləri köçürmə dialoqunda yalnız cari kanaldakı istifadəçiləri göstər"* (standart: sönülü).
+              * Bu seçim aktiv olduqda `Ctrl+Alt+M` pəncərəsində yalnız hazırda daxilində olduğunuz cari kanalın üzvləri görünür.
+            * **Lokalizasiya (Azərbaycan dili):**
+              * `az.ts` faylındakı bütün terminlər və şrift kodlaşdırması təmizləndi, dil kodu `az_AZ` edildi.
+              * TeamTalkClassic üçün `Azerbaijani.lng` dil faylı əlavə edildi.
+            * **Tam Müstəqil Paket (Standalone):**
+              * Bütün Qt 6 runtime faylları (`Qt6Core`, `Qt6Gui`, `Qt6Widgets`, `platforms/qwindows.dll`, `styles/`, səslər və s. 40-dan çox sistem faylı) paketə daxil edildi. Heç bir əlavə quraşdırma tələb etmədən birbaşa işləyir.
+          files: TeamTalk5-Windows-x64.zip
