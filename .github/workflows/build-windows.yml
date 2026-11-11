@@ -78,7 +78,11 @@ jobs:
         Copy-Item -Path "windows/install.bat" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
         Copy-Item -Path "windows/Client/qtTeamTalk/install.bat" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
         Copy-Item -Path "windows/Library/TeamTalk_DLL/*.dll" -Destination "TeamTalk5-Windows-x64/" -ErrorAction SilentlyContinue
-        if (Test-Path "windows/Client/qtTeamTalk/windeployqt") {
+        if (Get-Command windeployqt -ErrorAction SilentlyContinue) {
+          windeployqt --release --no-translations "TeamTalk5-Windows-x64/TeamTalk5.exe"
+        } elseif (Test-Path "$env:QT_ROOT/bin/windeployqt.exe") {
+          & "$env:QT_ROOT/bin/windeployqt.exe" --release --no-translations "TeamTalk5-Windows-x64/TeamTalk5.exe"
+        } elseif (Test-Path "windows/Client/qtTeamTalk/windeployqt") {
           Copy-Item -Path "windows/Client/qtTeamTalk/windeployqt/*" -Destination "TeamTalk5-Windows-x64/" -Recurse -Force
         }
         New-Item -ItemType Directory -Path "TeamTalk5-Windows-x64/languages" -Force
